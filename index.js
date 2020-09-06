@@ -8,6 +8,7 @@ const genres = require('./route/genres');
 const customers = require('./route/customers');
 const movies = require('./route/movies');
 const rentals = require('./route/rentals');
+const users = require('./route/users');
 
 
 
@@ -40,7 +41,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/genres', genres);  //? ROUTE FOR MOVIE GENRES
 app.use('/api/customers', customers);//?ROUTE FOR CUSTOMERS
 app.use('/api/movies', movies); //?ROUTE FOR MOVIES
-app.use('/api/rentals', rentals);
+app.use('/api/rentals', rentals); //? Route for RENTALS
+app.use('/api/users/', users); //? Route for USERS
 
 
 
