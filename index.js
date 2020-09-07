@@ -2,6 +2,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
+const config = require('config');
 
 //*CUSTOM ROUTE IMPORTED
 const genres = require('./route/genres');
@@ -12,8 +13,10 @@ const users = require('./route/users');
 const auth = require('./route/auth');
 
 
-
-
+if (!config.get('jwtPrivateKey')) {
+    console.log('FATAL ERROR: jwtPrivateKey is not defined');
+    process.exit(1);
+}
 
 //*DATABASE CONNECTIVITY (MONGOOSE)
 mongoose.set('useNewUrlParser', true);
