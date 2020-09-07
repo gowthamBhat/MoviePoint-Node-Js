@@ -9,6 +9,7 @@ const customers = require('./route/customers');
 const movies = require('./route/movies');
 const rentals = require('./route/rentals');
 const users = require('./route/users');
+const auth = require('./route/auth');
 
 
 
@@ -42,7 +43,8 @@ app.use('/api/genres', genres);  //? ROUTE FOR MOVIE GENRES
 app.use('/api/customers', customers);//?ROUTE FOR CUSTOMERS
 app.use('/api/movies', movies); //?ROUTE FOR MOVIES
 app.use('/api/rentals', rentals); //? Route for RENTALS
-app.use('/api/users/', users); //? Route for USERS
+app.use('/api/users', users); //? Route for USERS
+app.use('/api/auth/', auth); //? Route for Authentication
 
 
 
