@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+
 
 
 //*importing User class and Joi validate method from userValidate.js file
@@ -32,9 +35,13 @@ router.post("/", async (req, res) => {
         user.password = await bcrypt.hash(user.password, salt);
 
 
-        let result = await user.save();
+        await user.save();
+         //*  const token = jwt.sign({ _id: user._id }, config.get('jwtPrivateKey')); this code also can be written but we are genrating through a method from uservalidate.js
+        const token = user.generateAuthToken();  //? values are genrated from uservalidare.js file 
+        
+   
+        res.header('x-auth-token',token).send(_.pick(user, ['_id', 'name', 'email']));
 
-        res.send(_.pick(result, ['_id', 'name', 'email']));
 
         //TODO    to remove returning password to user we can use the approach
         //TODO    res.send({ name : result.name, email : result.user}); 
