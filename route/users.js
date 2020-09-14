@@ -23,7 +23,7 @@ const router = express.Router();
 
 
 router.get("/me",auth,async (req,res)=>{
-    console.log( "gowtham hers the id",req.user);
+
 const user = await User.findById(req.user._id).select("-password");
 res.send(user)
 });
@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
         //         email: req.body.email,
         //         password: req.body.password
         //     });
-        user = new User(_.pick(req.body, ['name', 'email', 'password']));
+        user = new User(_.pick(req.body, ['name', 'email', 'password','isAdmin']));
         const salt = await bcrypt.genSalt(10);                            //! BCRYPT library is used to hash the password
 
         user.password = await bcrypt.hash(user.password, salt);
@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
         const token = user.generateAuthToken();  //? values are genrated from uservalidare.js file 
         
    
-        res.header('x-auth-token',token).send(_.pick(user, ['_id', 'name', 'email']));
+        res.header('x-auth-token',token).send(_.pick(user, ['_id', 'name', 'email','isAdmin']));
 
 
         //TODO    to remove returning password to user we can use the approach

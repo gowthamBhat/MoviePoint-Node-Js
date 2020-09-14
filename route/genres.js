@@ -1,6 +1,7 @@
 const express = require('express');
 router = express.Router();
 const auth = require('../middleware/middlewareAuth');
+const admin = require('../middleware/middlewareAdmin');
 
 
 const mongoose = require('mongoose');
@@ -87,7 +88,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //*DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',[auth,admin], async (req, res) => {
 
     try {
         const gen = await Genres.findByIdAndRemove(req.params.id);
