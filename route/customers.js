@@ -3,6 +3,8 @@ router = express.Router();
 
 const mongoose = require('mongoose');
 
+const auth = require('../middleware/middlewareAuth');
+
 const { Customer, validate } = require('../models/customerValidate'); //*Single Responsibility principle, Separating validation
 
 
@@ -30,7 +32,7 @@ router.get('/:id', async (req, res) => {
 
 //*POST
 
-router.post('/', async (req, res) => {
+router.post('/',auth, async (req, res) => {
 
     try {
         const val = validate(req.body);

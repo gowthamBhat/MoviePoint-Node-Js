@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const { Movie, validate } = require('../models/moviesValidate');
 const { Genres } = require('../models/genresValidate');
+const auth = require('../middleware/middlewareAuth');
 
 router = express.Router();
 
@@ -35,7 +36,7 @@ router.get('/:id', async (req, res) => {
 
 //*POST
 
-router.post('/', async (req, res) => {
+router.post('/',auth , async (req, res) => {
 
     try {
         const val = validate(req.body);

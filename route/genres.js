@@ -1,5 +1,7 @@
 const express = require('express');
 router = express.Router();
+const auth = require('../middleware/middlewareAuth');
+
 
 const mongoose = require('mongoose');
 
@@ -32,7 +34,7 @@ router.get('/:id', async (req, res) => {
 
 
 //*POST
-router.post('/', async (req, res) => {
+router.post('/',auth, async (req, res) => {    //*in routers the second parameter can be a middleware
 
     try {
         const val = validate(req.body);

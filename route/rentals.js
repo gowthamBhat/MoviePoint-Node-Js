@@ -9,6 +9,7 @@ Fawn.init(mongoose);
 const { Rental, validate } = require('../models/rentalsValidate');
 const { Movie } = require('../models/moviesValidate');
 const { Customer } = require('../models/customerValidate');
+const auth = require('../middleware/middlewareAuth');
 
 
 //Router 
@@ -25,7 +26,7 @@ router.get('/', async (req, res) => {
 
 //*POST
 
-router.post('/', async (req, res) => {
+router.post('/',auth, async (req, res) => {
 
     try {
         const val = validate(req.body);
