@@ -11,8 +11,13 @@ const { Genres, validate } = require('../models/genresValidate'); //*Single Resp
 
 //*GET
 router.get('/', async (req, res) => {
+    try {
     const genres = await Genres.find().sort('name');
     res.send(genres);
+    }
+    catch(er){
+        res.status(500).send('SOmething went wrong try again');
+    }
 });
 
 router.get('/:id', async (req, res) => {
@@ -27,6 +32,7 @@ router.get('/:id', async (req, res) => {
     catch (error) {
 
         res.status(404).send('Data not found');
+        console.log(error);
     }
 
 
@@ -45,7 +51,7 @@ router.post('/',auth, async (req, res) => {    //*in routers the second paramete
 
         let genre = new Genres({ name: req.body.name });
 
-        genre = await genre.save();
+        genre = await genre.save()
 
         // let genre = await Genres.create({
         //     name: req.body.name
@@ -55,13 +61,14 @@ router.post('/',auth, async (req, res) => {    //*in routers the second paramete
     }
     catch (err) {
         res.status(400).send("Due to some internal issue POST method cant be performed");
+        console.log(err);
     }
 });
 
 
 
 //*PUT
-router.put('/:id', async (req, res) => {
+router.put('/:id',auth, async (req, res) => {
 
     try {
         const val = validate(req.body);
@@ -80,6 +87,7 @@ router.put('/:id', async (req, res) => {
     }
     catch (ex) {
         res.status(404).send('data not found');
+        console.log(ex);
 
     }
 
