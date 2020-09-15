@@ -10,14 +10,14 @@ const { Genres, validate } = require('../models/genresValidate'); //*Single Resp
 
 
 //*GET
-router.get('/', async (req, res) => {
+router.get('/', async (req, res,next) => {
     try {
     const genres = await Genres.find().sort('name');
     res.send(genres);
     }
     catch(er){
-        res.status(500).send('SOmething went wrong try again');
-    }
+        next(er);
+     }
 });
 
 router.get('/:id', async (req, res) => {
@@ -88,10 +88,7 @@ router.put('/:id',auth, async (req, res) => {
     catch (ex) {
         res.status(404).send('data not found');
         console.log(ex);
-
-    }
-
-
+     }
 
 });
 

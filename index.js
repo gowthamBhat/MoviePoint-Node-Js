@@ -11,6 +11,7 @@ const movies = require('./route/movies');
 const rentals = require('./route/rentals');
 const users = require('./route/users');
 const auth = require('./route/auth');
+const error  = require('./middleware/middlewareError');
 
 
 if (!config.get('jwtPrivateKey')) {
@@ -48,6 +49,8 @@ app.use('/api/movies', movies); //?ROUTE FOR MOVIES
 app.use('/api/rentals', rentals); //? Route for RENTALS
 app.use('/api/users', users); //? Route for USERS
 app.use('/api/auth/', auth); //? Route for Authentication
+
+app.use(error); //? Error handling middleware
 
 
 
