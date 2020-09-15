@@ -2,6 +2,7 @@ const express = require('express');
 router = express.Router();
 const auth = require('../middleware/middlewareAuth');
 const admin = require('../middleware/middlewareAdmin');
+const asyncMiddleware = require('../middleware/asyncMiddleware');
 
 
 const mongoose = require('mongoose');
@@ -10,38 +11,26 @@ const { Genres, validate } = require('../models/genresValidate'); //*Single Resp
 
 
 //*GET
-router.get('/', async (req, res,next) => {
+router.get('/', async (req, res, next) => {
     try {
-    const genres = await Genres.find().sort('name');
-    res.send(genres);
+        const genres = await Genres.find().sort('name');
+        res.send(genres);
     }
-    catch(er){
-        next(er);
-     }
+    catch (er) {
+        next(er);    //*error handling middleware used
+    }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', asyncMiddleware(async (req, res) => {  //asyncMiddleware is added to dynamically gen try catch block
+    const gen = await Genres.findById(req.params.id);
+    res.send(gen);
 
-    try {
-        const gen = await Genres.findById(req.params.id);
-        // console.log('block passed');
-        // const gen = genres.find(c => c.id === parseInt(req.params.id));
-        // if (req.params.id != gen._id) return res.status(404).send('data not found 2');
-        res.send(gen);
-    }
-    catch (error) {
-
-        res.status(404).send('Data not found');
-        console.log(error);
-    }
-
-
-});
+}));
 
 
 
 //*POST
-router.post('/',auth, async (req, res) => {    //*in routers the second parameter can be a middleware
+router.post('/', auth, async (req, res) => {    //*in routers the second parameter can be a middleware
 
     try {
         const val = validate(req.body);
@@ -68,7 +57,7 @@ router.post('/',auth, async (req, res) => {    //*in routers the second paramete
 
 
 //*PUT
-router.put('/:id',auth, async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
 
     try {
         const val = validate(req.body);
@@ -88,12 +77,12 @@ router.put('/:id',auth, async (req, res) => {
     catch (ex) {
         res.status(404).send('data not found');
         console.log(ex);
-     }
+    }
 
 });
 
 //*DELETE
-router.delete('/:id',[auth,admin], async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
 
     try {
         const gen = await Genres.findByIdAndRemove(req.params.id);
@@ -104,7 +93,7 @@ router.delete('/:id',[auth,admin], async (req, res) => {
     catch (error) {
         res.status(404).send('data not found');
         console.log(ex);
-}
+    }
 });
 
 module.exports = router;
