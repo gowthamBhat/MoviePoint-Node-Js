@@ -5,7 +5,7 @@ const { Movie, validate } = require('../models/moviesValidate');
 const { Genres } = require('../models/genresValidate');
 const auth = require('../middleware/middlewareAuth');
 
-const auth = require('../middleware/middlewareAuth');
+
 const admin = require('../middleware/middlewareAdmin');
 const winston = require('winston');
 
