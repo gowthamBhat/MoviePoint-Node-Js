@@ -9,24 +9,29 @@ Fawn.init(mongoose);
 const { Rental, validate } = require('../models/rentalsValidate');
 const { Movie } = require('../models/moviesValidate');
 const { Customer } = require('../models/customerValidate');
+
 const auth = require('../middleware/middlewareAuth');
+const admin = require('../middleware/middlewareAdmin');
+const winston = require('winston');
+const asyncMiddleware = require('../middleware/asyncMiddleware');
+
 
 
 //Router 
 const router = express.Router();
 
 //*GET
-router.get('/', async (req, res) => {
+router.get('/', asyncMiddleware(async (req, res) => {
 
     const rentals = await Rental.find().sort('-dateOut');
     // const rentalsCount = await Rental.find().countDocuments();
     // if (rentalsCount == 0) res.send("No data's added");
     res.send(rentals);
-});
+}));
 
 //*POST
 
-router.post('/',auth, async (req, res) => {
+router.post('/', auth, async (req, res) => {
 
     try {
         const val = validate(req.body);
@@ -72,7 +77,7 @@ router.post('/',auth, async (req, res) => {
 
     }
     catch (err) {
-
+        winston.error(err.message, err);
         res.status(404).send("data not found. request id's may be wrong");
     }
 

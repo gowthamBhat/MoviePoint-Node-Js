@@ -4,20 +4,21 @@ router = express.Router();
 const mongoose = require('mongoose');
 
 const auth = require('../middleware/middlewareAuth');
+const admin = require('../middleware/middlewareAdmin');
+const winston = require('winston');
+const asyncMiddleware = require('../middleware/asyncMiddleware');
 
 const { Customer, validate } = require('../models/customerValidate'); //*Single Responsibility principle, Separating validation
 
-
-
 //*GET
-router.get('/', async (req, res) => {
+router.get('/', asyncMiddleware(async (req, res) => {
 
     const customer = await Customer.find().sort('name');
 
     res.send(customer);
-});
+}));
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
 
     try {
         const customer = await Customer.findById(req.params.id);
@@ -25,6 +26,7 @@ router.get('/:id', async (req, res) => {
         res.send(customer);
     }
     catch (err) {
+        winston.error(err.message, err)
         res.status(404).send('Data not found');
     }
 });
@@ -32,7 +34,7 @@ router.get('/:id', async (req, res) => {
 
 //*POST
 
-router.post('/',auth, async (req, res) => {
+router.post('/', auth, async (req, res) => {
 
     try {
         const val = validate(req.body);
@@ -49,13 +51,14 @@ router.post('/',auth, async (req, res) => {
         res.send(customer);
     }
     catch (err) {
+        winston.error(err.message, err);
         res.status(400).send("Due to some internal issue POST method cant be performed");
     }
 });
 
 //*PUT
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
 
     try {
         const val = validate(req.body);
@@ -67,6 +70,7 @@ router.put('/:id', async (req, res) => {
         res.send(gen);
     }
     catch (ex) {
+        winston.error(ex.message, ex);
         res.status(404).send('data not found');
 
     }
@@ -74,7 +78,7 @@ router.put('/:id', async (req, res) => {
 
 //*DELETE
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
 
     try {
         const gen = await Customer.findByIdAndRemove(req.params.id);
@@ -83,6 +87,7 @@ router.delete('/:id', async (req, res) => {
 
     }
     catch (error) {
+        winston.error(error.message, error);
         res.status(404).send('data not found');
 
     }

@@ -1,10 +1,10 @@
 const express = require('express');
 router = express.Router();
+const asyncMiddleware = require('../middleware/asyncMiddleware');
+
 const auth = require('../middleware/middlewareAuth');
 const admin = require('../middleware/middlewareAdmin');
-const asyncMiddleware = require('../middleware/asyncMiddleware');
 const winston = require('winston');
-
 
 const mongoose = require('mongoose');
 
@@ -22,9 +22,9 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id', asyncMiddleware(async (req, res) => {  //asyncMiddleware is added to dynamically gen try catch block
-    const gen = await Genres.findById(req.params.id);         //for only this route async middleware is added bcz i already wrote error handling code for all other routes
-    res.send(gen);                                              //and changing them now is hectic, so im letting it be
+router.get('/:id', asyncMiddleware(async (req, res) => {  //? asyncMiddleware is added to dynamically gen try catch block
+    const gen = await Genres.findById(req.params.id);     //? for only this route async middleware is added bcz i already wrote error handling code for all other routes
+    res.send(gen);                                        //? and changing them now is hectic, so im letting it be
 }));
 
 
@@ -49,9 +49,8 @@ router.post('/', auth, async (req, res) => {    //*in routers the second paramet
 
     }
     catch (err) {
+        winston.error(err.message, err); //error will be shown in logfile.log
         res.status(500).send("Due to some internal issue POST method cant be performed");
-        console.log(err);
-        winston.error(err.message, err);
     }
 });
 
@@ -75,13 +74,11 @@ router.put('/:id', auth, async (req, res) => {
 
         // const gen = await Genres.updateOne({ _id: req.params.id }, { name: req.body.name });
 
-
         res.send(gen);
     }
     catch (ex) {
-        res.status(404).send('data not found');
-        console.log(ex);
         winston.error(ex.message, ex);
+        res.status(404).send('data not found');
     }
 
 });
@@ -96,8 +93,9 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 
     }
     catch (error) {
+        winston.error(error.message, error);
         res.status(404).send('data not found');
-        console.log(ex);
+
     }
 });
 

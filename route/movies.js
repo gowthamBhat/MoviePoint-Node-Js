@@ -5,6 +5,11 @@ const { Movie, validate } = require('../models/moviesValidate');
 const { Genres } = require('../models/genresValidate');
 const auth = require('../middleware/middlewareAuth');
 
+const auth = require('../middleware/middlewareAuth');
+const admin = require('../middleware/middlewareAdmin');
+const winston = require('winston');
+
+
 router = express.Router();
 
 //*GET
@@ -15,11 +20,12 @@ router.get('/', async (req, res) => {
         res.send(movie);
     }
     catch (err) {
+        winston.error(err.message, err);
         res.status(400).send('operation failed');
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     try {
 
         const movies = await Movie.findById(req.params.id);
@@ -27,7 +33,7 @@ router.get('/:id', async (req, res) => {
         res.send(movies);
     }
     catch (err) {
-
+        winston.error(err.message, err);
         res.status(404).send('data not found');
     }
 
@@ -36,7 +42,7 @@ router.get('/:id', async (req, res) => {
 
 //*POST
 
-router.post('/',auth , async (req, res) => {
+router.post('/', auth, async (req, res) => {
 
     try {
         const val = validate(req.body);
@@ -65,6 +71,7 @@ router.post('/',auth , async (req, res) => {
 
     }
     catch (err) {
+        winston.error(error.message, error);
         res.status(400).send("Due to some internal issue POST method cant be performed");
     }
 });
@@ -72,7 +79,7 @@ router.post('/',auth , async (req, res) => {
 
 
 //*PUT
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
 
     try {
         const val = validate(req.body);
@@ -107,13 +114,14 @@ router.put('/:id', async (req, res) => {
         res.send(gen);
     }
     catch (ex) {
+        winston.error(ex.message, ex);
         res.status(404).send('data not found');
 
     }
 });
 
 //*DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
 
     try {
         const gen = await Movie.findByIdAndRemove(req.params.id);
@@ -122,6 +130,7 @@ router.delete('/:id', async (req, res) => {
 
     }
     catch (error) {
+        winston.error(error.message, error);
         res.status(404).send('data not found');
 
     }

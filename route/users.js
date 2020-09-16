@@ -5,6 +5,9 @@ const auth = require('../middleware/middlewareAuth');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const winston = require('winston');
+
+const asyncMiddleware = require('../middleware/asyncMiddleware');
 
 
 
@@ -19,14 +22,14 @@ const router = express.Router();
 //     const user = await User.findById(req.user._id).select("-password");
 //     res.send(user);
 //   });
-  
 
 
-router.get("/me",auth,async (req,res)=>{
 
-const user = await User.findById(req.user._id).select("-password");
-res.send(user)
-});
+router.get("/me", auth, asyncMiddleware(async (req, res) => {
+
+    const user = await User.findById(req.user._id).select("-password");
+    res.send(user)
+}));
 
 router.post("/", async (req, res) => {
 
@@ -44,18 +47,18 @@ router.post("/", async (req, res) => {
         //         email: req.body.email,
         //         password: req.body.password
         //     });
-        user = new User(_.pick(req.body, ['name', 'email', 'password','isAdmin']));
+        user = new User(_.pick(req.body, ['name', 'email', 'password', 'isAdmin']));
         const salt = await bcrypt.genSalt(10);                            //! BCRYPT library is used to hash the password
 
         user.password = await bcrypt.hash(user.password, salt);
 
 
         await user.save();
-         //*  const token = jwt.sign({ _id: user._id }, config.get('jwtPrivateKey')); this code also can be written but we are genrating through a method from uservalidate.js
+        //*  const token = jwt.sign({ _id: user._id }, config.get('jwtPrivateKey')); this code also can be written but we are genrating through a method from uservalidate.js
         const token = user.generateAuthToken();  //? values are genrated from uservalidare.js file 
-        
-   
-        res.header('x-auth-token',token).send(_.pick(user, ['_id', 'name', 'email','isAdmin']));
+
+
+        res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email', 'isAdmin']));
 
 
         //TODO    to remove returning password to user we can use the approach
@@ -64,7 +67,8 @@ router.post("/", async (req, res) => {
 
     }
     catch (err) {
-        res.status(400).send(err);
+        winston.error(err.message, err);
+        res.status(500).send("something went wrong");
     }
 });
 
