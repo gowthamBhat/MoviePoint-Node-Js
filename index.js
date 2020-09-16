@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const config = require('config');
 const winston = require('winston');
+require('winston-mongodb');
 
 //*CUSTOM ROUTE IMPORTED
 const genres = require('./route/genres');
@@ -20,10 +21,6 @@ if (!config.get('jwtPrivateKey')) {
     process.exit(1);
 }
 
-// winston.add(winston.transports.File, { filename: 'logfile.log' });
-winston.add(new winston.transports.File({ filename: 'logfile.log' }));
-
-
 //*DATABASE CONNECTIVITY (MONGOOSE)
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -37,7 +34,13 @@ mongoose.connect('mongodb://localhost:27017/moviePoint') //{ useNewUrlParser: tr
     .catch((err) => {
 
         console.log("error encounterd", err);
-    })
+    });
+
+
+winston.add(new winston.transports.File({ filename: 'logfile.log' })); //* this will save log errors in logfile.log in current dir
+// winston.add(new winston.transports.MongoDB({
+//     db: 'mongodb://localhost:27017/moviePoint', useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false
+// }));  //* this will log and save errors of database in the database with new collection
 
 const app = express();
 
@@ -76,7 +79,7 @@ app.use(express.static('public'));
 
 app.get('/', (req, res) => {
     res.send('hello moviePoint');
-});
+}); //* rest of handlers are moduled and separated 
 
 
 

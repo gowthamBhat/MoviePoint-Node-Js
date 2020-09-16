@@ -15,6 +15,7 @@ const { Genres, validate } = require('../models/genresValidate'); //*Single Resp
 router.get('/', async (req, res, next) => {
     try {
         const genres = await Genres.find().sort('name');
+
         res.send(genres);
     }
     catch (er) {
