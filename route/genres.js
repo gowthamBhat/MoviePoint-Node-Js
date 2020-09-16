@@ -24,7 +24,6 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', asyncMiddleware(async (req, res) => {  //asyncMiddleware is added to dynamically gen try catch block
     const gen = await Genres.findById(req.params.id);
     res.send(gen);
-
 }));
 
 

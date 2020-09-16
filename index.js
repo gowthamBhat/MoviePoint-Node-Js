@@ -3,6 +3,7 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const config = require('config');
+const winston = require('winston');
 
 //*CUSTOM ROUTE IMPORTED
 const genres = require('./route/genres');
@@ -11,13 +12,17 @@ const movies = require('./route/movies');
 const rentals = require('./route/rentals');
 const users = require('./route/users');
 const auth = require('./route/auth');
-const error  = require('./middleware/middlewareError');
+const error = require('./middleware/middlewareError');
 
 
 if (!config.get('jwtPrivateKey')) {
     console.log('FATAL ERROR: jwtPrivateKey is not defined');
     process.exit(1);
 }
+
+// winston.add(winston.transports.File, { filename: 'logfile.log' });
+winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+
 
 //*DATABASE CONNECTIVITY (MONGOOSE)
 mongoose.set('useNewUrlParser', true);
