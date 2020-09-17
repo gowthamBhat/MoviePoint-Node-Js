@@ -55,7 +55,7 @@ process.on('unhandledRejection', (e) => {
     process.exit(1);
 });
 
-throw new Error('exp knowingly');
+
 
 //*Middlewares
 app.use(helmet());
