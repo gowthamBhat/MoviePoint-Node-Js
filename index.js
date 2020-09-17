@@ -44,6 +44,18 @@ winston.add(new winston.transports.File({ filename: 'logfile.log' })); //* this 
 
 const app = express();
 
+process.on('uncaughtException', (e) => {
+    console.log("WE GOT AN UNCAUGHT EXCEPTION");
+    winston.error(e.message, e);
+    process.exit(1);
+});
+process.on('unhandledRejection', (e) => {
+    console.log("WE GOT AN UNHANDLED PROMISE");
+    winston.error(e.message, e);
+    process.exit(1);
+});
+
+throw new Error('exp knowingly');
 
 //*Middlewares
 app.use(helmet());
@@ -59,9 +71,6 @@ app.use('/api/users', users); //? Route for USERS
 app.use('/api/auth/', auth); //? Route for Authentication
 
 app.use(error); //? Error handling middleware
-
-
-
 
 
 
