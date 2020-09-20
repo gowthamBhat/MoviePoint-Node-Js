@@ -46,11 +46,13 @@ const app = express();
 
 process.on('uncaughtException', (e) => {
     console.log("WE GOT AN UNCAUGHT EXCEPTION");
+    console.log(e);
     winston.error(e.message, e);
     process.exit(1);
 });
 process.on('unhandledRejection', (e) => {
     console.log("WE GOT AN UNHANDLED PROMISE");
+    console.log(e);
     winston.error(e.message, e);
     process.exit(1);
 });
