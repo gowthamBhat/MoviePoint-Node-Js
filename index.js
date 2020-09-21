@@ -27,15 +27,16 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
-mongoose.connect('mongodb://localhost:27017/moviePoint') //{ useNewUrlParser: true, useUnifiedTopology: true }
+mongoose.connect(config.get('db')) //{ useNewUrlParser: true, useUnifiedTopology: true }
     .then(() => {
-        console.log("connected...");
+        console.log(`connected to ${config.get('db')}`);
+        // console.log(`development env is ${process.env.NODE_ENV}`); //cross-env package is used to set node env
     })
     .catch((err) => {
 
         console.log("error encounterd", err);
     });
-
+//Get-ChildItem Env: | Format-Table -Wrap -AutoSize //to see all environment variables
 
 winston.add(new winston.transports.File({ filename: 'logfile.log' })); //* this will save log errors in logfile.log in current dir
 // winston.add(new winston.transports.MongoDB({
