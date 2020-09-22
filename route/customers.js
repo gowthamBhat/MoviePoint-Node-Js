@@ -7,6 +7,7 @@ const auth = require('../middleware/middlewareAuth');
 const admin = require('../middleware/middlewareAdmin');
 const winston = require('winston');
 const asyncMiddleware = require('../middleware/asyncMiddleware');
+const validateObjectId = require('../middleware/validateObjectId');
 
 const { Customer, validate } = require('../models/customerValidate'); //*Single Responsibility principle, Separating validation
 
@@ -18,7 +19,7 @@ router.get('/', asyncMiddleware(async (req, res) => {
     res.send(customer);
 }));
 
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', validateObjectId, async (req, res) => {
 
     try {
         const customer = await Customer.findById(req.params.id);

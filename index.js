@@ -58,8 +58,6 @@ process.on('unhandledRejection', (e) => {
     process.exit(1);
 });
 
-
-
 //*Middlewares
 app.use(helmet());
 app.use(express.json());
@@ -74,7 +72,6 @@ app.use('/api/users', users); //? Route for USERS
 app.use('/api/auth/', auth); //? Route for Authentication
 
 app.use(error); //? Error handling middleware
-
 
 
 //*STATIC PAGE ROUTES

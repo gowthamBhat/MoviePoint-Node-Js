@@ -1,6 +1,7 @@
 const express = require('express');
 router = express.Router();
 const asyncMiddleware = require('../middleware/asyncMiddleware');
+const validateObjectId = require('../middleware/validateObjectId'); //this middleware check for the valid object_id
 
 const auth = require('../middleware/middlewareAuth');
 const admin = require('../middleware/middlewareAdmin');
@@ -23,7 +24,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id', asyncMiddleware(async (req, res) => {  //? asyncMiddleware is added to dynamically gen try catch block
+router.get('/:id', validateObjectId, asyncMiddleware(async (req, res) => {  //? asyncMiddleware is added to dynamically gen try catch block
     const gen = await Genres.findById(req.params.id);     //? for only this route async middleware is added bcz i already wrote error handling code for all other routes
     res.send(gen);                                        //? and changing them now is hectic, so im letting it be
 }));
