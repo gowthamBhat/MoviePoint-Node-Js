@@ -13,7 +13,7 @@ const { Genres, validate } = require('../models/genresValidate'); //*Single Resp
 
 
 //*GET
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res, next) => {  //* it should have 3 parameters to pass error to error handling middleware
     try {
         const genres = await Genres.find().sort('name');
 

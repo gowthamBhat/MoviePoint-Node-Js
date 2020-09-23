@@ -13,6 +13,7 @@ const movies = require('./route/movies');
 const rentals = require('./route/rentals');
 const users = require('./route/users');
 const auth = require('./route/auth');
+const returns = require('./route/returns');
 const error = require('./middleware/middlewareError');
 
 
@@ -70,6 +71,7 @@ app.use('/api/movies', movies); //?ROUTE FOR MOVIES
 app.use('/api/rentals', rentals); //? Route for RENTALS
 app.use('/api/users', users); //? Route for USERS
 app.use('/api/auth/', auth); //? Route for Authentication
+app.use('/api/returns', returns);
 
 app.use(error); //? Error handling middleware
 
