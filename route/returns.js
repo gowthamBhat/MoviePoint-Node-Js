@@ -5,12 +5,17 @@ const { Movie } = require('../models/moviesValidate');
 
 const auth = require('../middleware/middlewareAuth');
 const moment = require('moment');
+const _ = require('lodash');
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi)
 
 
 router.post('/', auth, async (req, res, next) => {
     try {
-        if (!req.body.customerId) return res.status(400).send('Customer Id not Provided');
-        if (!req.body.movieId) return res.status(400).send('Movie Id not Provided');
+
+        const val = validate(req.body);
+
+        if (val.error) return res.status(400).send(val.error.details[0].message);
 
 
         const rentals = await Rental.findOne({ 'customer._id': req.body.customerId, 'movie._id': req.body.movieId });
@@ -35,5 +40,18 @@ router.post('/', auth, async (req, res, next) => {
         next(er);    //*error handling middleware used
     }
 });
+
+function validate(body) {
+
+    const schema =
+    {
+        customerId: Joi.objectId().required(),
+        movieId: Joi.objectId().required()
+
+    };
+
+    return Joi.validate(body, schema);
+}
+
 
 module.exports = router;
