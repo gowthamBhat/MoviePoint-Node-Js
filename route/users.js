@@ -58,7 +58,9 @@ router.post("/", async (req, res) => {
         const token = user.generateAuthToken();  //? values are genrated from uservalidare.js file 
 
 
-        res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email', 'isAdmin']));
+        res.header('x-auth-token', token)
+        .header('access-control-expose-headers', 'x-auth-token') //* Setting this header is extreamly important to access jwt token in client side
+        .send(_.pick(user, ['_id', 'name', 'email', 'isAdmin']));
 
 
         //TODO    to remove returning password to user we can use the approach
