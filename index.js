@@ -4,6 +4,8 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const config = require('config');
 const winston = require('winston');
+const morgan = require('morgan');
+const chalk = require('chalk');
 require('winston-mongodb');
 
 //*CUSTOM ROUTE IMPORTED
@@ -63,6 +65,14 @@ process.on('unhandledRejection', (e) => {
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(morgan('dev'));
+app.use(function timeLogger(req, res, next) {
+    let requestTime = new Date();
+    requestTime = requestTime.toLocaleTimeString();
+    console.log(chalk.magenta(`REQUEST TIME - ${requestTime}`));
+    next();
+});
 
 //*CUSTOM ROUTE MIDDLEWARES
 app.use('/api/genres', genres);  //? ROUTE FOR MOVIE GENRES
