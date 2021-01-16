@@ -33,6 +33,7 @@ const moviesSchema = new mongoose.Schema({
     genre: {
         type: genresSchema,
         required: true,
+        trim: true
     },
     numberInStock: {
         type: Number,
